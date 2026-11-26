@@ -6,8 +6,6 @@ on:
       - '.github/workflows/publish.yml'
 permissions:
   contents: write
-  pages: write
-  id-token: write
 concurrency:
   group: isleflight-pages
   cancel-in-progress: false
@@ -70,10 +68,3 @@ jobs:
             git commit -m 'Sync Isleflight simulator assets'
             git push
           fi
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-      - uses: actions/deploy-pages@v4
