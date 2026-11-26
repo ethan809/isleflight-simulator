@@ -22,7 +22,6 @@ jobs:
         run: |
           mkdir -p assets
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/.nojekyll' --output '.nojekyll'
-          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/README.md' --output 'README.md'
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/737-800.png' --output 'assets/737-800.png'
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A220.external.glb' --output 'assets/A220.external.glb'
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A320_nologo.glb' --output 'assets/A320_nologo.glb'
@@ -61,6 +60,7 @@ jobs:
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/nosegear.ac' --output 'assets/nosegear.ac'
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/winglet.ac' --output 'assets/winglet.ac'
           curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/index.html' --output 'index.html'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/multiplayer.js' --output 'assets/multiplayer.js'
       - name: Save actual game files in GitHub
         run: |
           git config user.name 'github-actions[bot]'
