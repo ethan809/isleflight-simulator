@@ -1067,7 +1067,8 @@ for(const [kind,roadX,roadZ,...offsets] of realHighlandRoads){
   const a=pts[j-1],b=pts[j],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
   if(len<.4)continue;
   totalLength+=len;
-  const divisions=Math.max(1,Math.ceil(len/54)),sideX=-dz/len*fullWidth*.5,sideZ=dx/len*fullWidth*.5;
+  // Short road sections hug uneven ground instead of cutting through hills.
+  const divisions=Math.max(1,Math.ceil(len/11)),sideX=-dz/len*fullWidth*.55,sideZ=dx/len*fullWidth*.55;
   for(let k=0;k<divisions;k++){
    const t=k/divisions,u=(k+1)/divisions,ax=mix(a[0],b[0],t),az=mix(a[1],b[1],t),bx=mix(a[0],b[0],u),bz=mix(a[1],b[1],u);
    const midX=(ax+bx)/2,midZ=(az+bz)/2;
@@ -1075,7 +1076,7 @@ for(const [kind,roadX,roadZ,...offsets] of realHighlandRoads){
    const tileX=Math.floor(midX/1900),tileZ=Math.floor(midZ/1900),key=tileX+','+tileZ;
    let mesh=realRoadGroups.get(key);
    if(!mesh){mesh=sceneryGroup({region:0},tileX*1900+950,tileZ*1900+950,7100);realRoadGroups.set(key,mesh)}
-   const point=(x,z)=>[x,renderedHighlandGround(x,z)+.28,z];
+   const point=(x,z)=>[x,terrainHeight(x,z,0)+.68,z];
    // Road paving gets its own depth layer, avoiding z-fighting with the
    // triangulated terrain beneath it on the steep Highland slopes.
    face([point(ax-sideX,az-sideZ),point(bx-sideX,bz-sideZ),point(bx+sideX,bz+sideZ),point(ax+sideX,az+sideZ)],colour,mesh);
@@ -2480,7 +2481,7 @@ function boardCar(){
  const target=nearestDriveRoad(x,z,activeMap);
  if(!target){driveLoading.textContent='Could not find a drivable road at this spot. Select another town.';return}
  Object.assign(driver,target,{model:chosen,speed:0,steering:0,accel:0,brake:0,stick:0,trigger:0,reverse:0,handbrake:false,cameraYaw:0,cameraPitch:-.30,cameraDistance:11,damage:0});
- driver.y=terrainHeight(driver.x,driver.z,activeMap)+.08;
+ driver.y=terrainHeight(driver.x,driver.z,activeMap)+.52;
  driving=true;carInside=false;onFoot=false;cockpit=false;passenger=false;keys.clear();
  closeDriveMenu();driveReturn.hidden=false;exitBtn.textContent='E · Exit car';updateViewButtons();
 }
@@ -2516,7 +2517,9 @@ function stepCar(dt){
   else if(hit)driver.speed=0;
   else{driver.x=x;driver.z=z}
  }
- driver.y=terrainHeight(driver.x,driver.z,activeMap)+.08;
+ // Damp vertical movement when crossing uneven heightmap samples.
+ const targetY=terrainHeight(driver.x,driver.z,activeMap)+.52;
+ driver.y+=(targetY-driver.y)*(1-Math.exp(-dt*17));
  trafficTime+=dt;updateBuildingFragments(dt);
 }
 // Closed flight plans with tangent-continuous turns. Each leg joins two airports via the runway approaches.
@@ -4255,6 +4258,7 @@ function render(){
  let yaw=driving?driver.heading+driver.cameraYaw:onFoot?walker.yaw:cockpit?Math.atan2(front[0],front[2]):camHeading+orbit.yaw,tilt=driving?driver.cameraPitch:onFoot?walker.pitch:cockpit?Math.asin(clamp(front[1],-1,1)):-orbit.elev,ch=Math.cos(yaw),sh=Math.sin(yaw),cp=Math.cos(tilt),sp=Math.sin(tilt);
  const d=driver.cameraDistance;
  let [cx,cy,cz]=driving?(carInside?[driver.x-Math.cos(driver.heading)*.43+Math.sin(driver.heading)*.35,driver.y+1.40,driver.z+Math.sin(driver.heading)*.43+Math.cos(driver.heading)*.35]:[driver.x-d*sh,driver.y+2.35+d*.3,driver.z-d*ch]):onFoot?[walker.x,terrainHeight(walker.x,walker.z,activeMap)+1.75,walker.z]:cockpit?aircraft([eye.x,eye.y,(passenger?-spec.length*.03:spec.pilotZ)+eye.z]):[p.x-orbit.dist*Math.cos(orbit.elev)*sh,p.y+4+orbit.dist*Math.sin(orbit.elev),p.z-orbit.dist*Math.cos(orbit.elev)*ch];
+ if(driving&&!carInside)cy=Math.max(cy,terrainHeight(cx,cz,activeMap)+1.55);
  let f=Math.min(width*1.05,height*(driving?(carInside?.93:1.03):onFoot?.94:cockpit?.76*cockpitZoom:1.02)),mid=height*(cockpit?.5:.51);
  function camera([x,y,z]){x-=cx;y-=cy;z-=cz;let front=x*sh+z*ch;return [x*ch-z*sh,y*cp-front*sp,y*sp+front*cp]}
  ctx.save();if(cockpit){ctx.translate(width/2,mid);ctx.rotate(Math.atan2(right[1],up[1]));ctx.translate(-width/2,-mid)}let extent=2*(width+height),horizon=mid+f*Math.tan(tilt);
@@ -4368,6 +4372,7 @@ function render(){
   const carMesh=licensedCars.get(driver.model)||[],cs=Math.cos(driver.heading),sn=Math.sin(driver.heading);
   draw(carMesh,([lx,ly,lz])=>[driver.x+lx*cs+lz*sn,driver.y+ly,driver.z+lz*cs-lx*sn]);
  }
+ if(typeof drawPeerVehicles==='function')drawPeerVehicles(draw,camera,cx,cz);
  // Parked aircraft and moving service traffic make the geolocated English
  // hubs feel active. Their wheels rest above the flat airport terrain.
  if(activeMap===4)for(const f of englandFields){
@@ -4474,9 +4479,10 @@ function frame(now){
  if(driving){const ticks=Math.max(1,Math.ceil(dt*80));for(let i=0;i<ticks;i++)stepCar(dt/ticks)}
  else if(!onFoot){const ticks=Math.max(1,Math.ceil(dt*120));for(let i=0;i<ticks;i++)step(dt/ticks)}
  camHeading+=Math.atan2(Math.sin(plane.heading-camHeading),Math.cos(plane.heading-camHeading))*(1-Math.exp(-3*dt));
+ if(typeof syncPeers==='function')syncPeers(now);
  const began=performance.now();render();tuneResolution((performance.now()-began)/1000);
  requestAnimationFrame(frame);
 }
 updateTraffic(plane,0);requestAnimationFrame(frame);
-</script></body></html>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a60811efa91d6c2d',t:'MTc5NTY4NzQ3Nw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a60811efa91d6c2d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</script><script src="assets/multiplayer.js"></script></body></html>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a6081ec5bfe2fd0d',t:'MTc5NTY4ODAwMw=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a6081ec5bfe2fd0d',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
