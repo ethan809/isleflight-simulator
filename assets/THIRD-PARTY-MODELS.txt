@@ -1,0 +1,88 @@
+ISLEFLIGHT — AIRCRAFT AND CAR MODEL ATTRIBUTION
+======================================
+
+Meshes in this website are authored by independent artists and have been
+converted, reoriented, scaled, and/or recolored for Isleflight. The names of
+aircraft manufacturers and airlines do not imply endorsement.
+
+B737_nologo.glb, A320_nologo.glb, B787_nologo.glb,
+A350_nologo.glb, A380_nologo.glb
+  Original author: AMV Lab
+  License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+  Source: https://github.com/amvlab/aircraft-models
+  License: https://creativecommons.org/licenses/by/4.0/
+
+B737.flightgear.glb (the new default Boeing 737 exterior)
+  Original: FlightGear 737-800 exterior by the FGMEMBERS/737-800 contributors
+  Source: https://github.com/FGMEMBERS/737-800
+  License: GNU General Public License version 2 (GPL-2.0)
+  This is an actual FlightGear aircraft, not geometry designed for Isleflight.
+  The original AC3D fuselage, left/right wing, stabilizers, winglets and nose
+  gear are preserved as B737.flightgear.source.ac, LWing.ac, RWing.ac,
+  HorzStab.ac, VertStab.ac, winglet.ac, and nosegear.ac; the original
+  737-800.png texture is also provided. The edited conversion script is
+  Concorde.converter.py (supports both aircraft), and a copy of GPL-2.0
+  is included in LICENSE-GPL-2.0.txt.
+
+B744.external.glb, E190.external.glb, DH8D.blob.glb
+  Original: Bluebell CSL aircraft set
+  License: CC0 / public-domain dedication
+  Hosted/credited at: https://github.com/linnhtetwin/airport_sim
+  Credits: https://github.com/linnhtetwin/airport_sim/blob/main/public/models/CREDITS.txt
+  License: https://creativecommons.org/publicdomain/zero/1.0/
+
+ATR72.external.glb
+  Original author: Oyan3D
+  License: CC BY 4.0
+  Asset incorporated from: https://github.com/uhrichsam4/gods-eye-view
+  License: https://creativecommons.org/licenses/by/4.0/
+
+A220.external.glb
+  Original author: Duh anime addict
+  License: CC BY 4.0
+  Adapted by: djzielin/babylonjs-mapping
+  Source: https://github.com/djzielin/babylonjs-mapping
+  License: https://creativecommons.org/licenses/by/4.0/
+
+A321.external.glb
+  Original: FlightGear aircraft model, GLB adaptation by Johann Cardenas
+  License: GNU General Public License version 2 (GPL-2.0)
+  Source: https://github.com/Johann-Cardenas/Johann-Cardenas.github.io/tree/main/e-labs/gear3d/assets/bodies
+  Credit details: https://github.com/Johann-Cardenas/Johann-Cardenas.github.io/blob/main/e-labs/gear3d/assets/bodies/CREDITS.md
+  A copy of the GPL-2.0 license is provided in LICENSE-GPL-2.0.txt.
+
+Concorde.flightgear.glb
+  Original: FlightGear Concorde exterior geometry (Concorde v2.16)
+  FlightGear contributors: Christian Le Moigne and others
+  Source: https://github.com/FGMEMBERS/Concorde
+  Converted, simplified and adapted for Isleflight from the FlightGear AC3D
+  mesh distributed by al-ex-ai/Machina (GPL v2):
+  https://github.com/al-ex-ai/Machina/tree/main/assets/aircraft/concorde
+  License: GNU General Public License version 2 (GPL-2.0)
+  A copy of the GPL-2.0 license is provided in LICENSE-GPL-2.0.txt.
+  Full original Concorde AC3D source, its original .webp textures and the
+  conversion script accompany the game as assets/Concorde.source.ac,
+  assets/concorde*.webp, assets/fx.webp and assets/Concorde.converter.py.
+
+F16.external.glb, F18.external.glb
+  Original author: syncopika
+  Source: https://github.com/syncopika/threejs-projects
+  The author explicitly allows use of their glTF assets in the repository
+  README, without requiring attribution.
+
+Airline liveries in Isleflight are approximate selectable game paint schemes,
+not official reproductions of aircraft-specific registered tail numbers.
+
+family-sedan.glb, five-door-hatchback.glb,
+mid-size-suv.glb, mid-engine-supercar.glb
+  Original 3D models: tevy
+  Models: Family Sedan, Hatchback, Mid-size SUV, Mid-engine Supercar
+  Sources: https://tevy.dev/models/family-sedan
+           https://tevy.dev/models/hatchback
+           https://tevy.dev/models/suv
+           https://tevy.dev/models/supercar
+  License: CC0 1.0 Universal (public-domain dedication)
+  License: https://creativecommons.org/publicdomain/zero/1.0/
+  These are genuine author-created meshes, decoded from meshopt-compressed
+  glTF GLB files and rescaled for the in-game drivable cars.
+  No Toyota logos or Toyota-built car meshes are included.
