@@ -1,0 +1,79 @@
+name: Publish Isleflight to GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish.yml'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: isleflight-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download Isleflight game and licensed assets
+        run: |
+          mkdir -p assets
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/.nojekyll' --output '.nojekyll'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/README.md' --output 'README.md'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/737-800.png' --output 'assets/737-800.png'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A220.external.glb' --output 'assets/A220.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A320_nologo.glb' --output 'assets/A320_nologo.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A321.external.glb' --output 'assets/A321.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A350_nologo.glb' --output 'assets/A350_nologo.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/A380_nologo.glb' --output 'assets/A380_nologo.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/ATR72.external.glb' --output 'assets/ATR72.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/B737.flightgear.glb' --output 'assets/B737.flightgear.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/B737.flightgear.source.ac' --output 'assets/B737.flightgear.source.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/B737_nologo.glb' --output 'assets/B737_nologo.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/B744.external.glb' --output 'assets/B744.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/B787_nologo.glb' --output 'assets/B787_nologo.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/Concorde.converter.py' --output 'assets/Concorde.converter.py'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/Concorde.flightgear.glb' --output 'assets/Concorde.flightgear.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/Concorde.source.ac' --output 'assets/Concorde.source.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/DH8D.blob.glb' --output 'assets/DH8D.blob.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/E190.external.glb' --output 'assets/E190.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/F16.external.glb' --output 'assets/F16.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/F18.external.glb' --output 'assets/F18.external.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/HorzStab.ac' --output 'assets/HorzStab.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/LICENSE-GPL-2.0.txt' --output 'assets/LICENSE-GPL-2.0.txt'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/LWing.ac' --output 'assets/LWing.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/RWing.ac' --output 'assets/RWing.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/THIRD-PARTY-MODELS.txt' --output 'assets/THIRD-PARTY-MODELS.txt'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/VertStab.ac' --output 'assets/VertStab.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/brora-osm.js' --output 'assets/brora-osm.js'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/concorde-cockpit-textures.webp' --output 'assets/concorde-cockpit-textures.webp'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/concorde-window.webp' --output 'assets/concorde-window.webp'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/concorde.webp' --output 'assets/concorde.webp'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/england-osm.js' --output 'assets/england-osm.js'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/family-sedan.glb' --output 'assets/family-sedan.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/five-door-hatchback.glb' --output 'assets/five-door-hatchback.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/fx.webp' --output 'assets/fx.webp'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/mid-engine-supercar.glb' --output 'assets/mid-engine-supercar.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/mid-size-suv.glb' --output 'assets/mid-size-suv.glb'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/nosegear.ac' --output 'assets/nosegear.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/assets/winglet.ac' --output 'assets/winglet.ac'
+          curl --fail --location --retry 3 --silent --show-error 'https://isleflight-highlands-sim.pithycatkin2.chatgpt.site/index.html' --output 'index.html'
+      - name: Save actual game files in GitHub
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .nojekyll assets
+          if ! git diff --cached --quiet; then
+            git commit -m 'Sync Isleflight simulator assets'
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - uses: actions/deploy-pages@v4
